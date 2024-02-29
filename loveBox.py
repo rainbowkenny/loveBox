@@ -5,6 +5,8 @@ from signal import pause
 import time
 import google.cloud.texttospeech as tts
 import config
+from typing import Sequence
+
 openai.api_key=config.OPEN_AI_KEY
 API_KEY=config.GOOGLE_CLOUD_KEY
 led_pin ="8" 
@@ -17,11 +19,20 @@ def generate_love_sentence(prmpt):
     # response = openai.ChatCompletion.create(
     completion = openai.completions.create(
       model="gpt-3.5-turbo-instruct",
+      # model="gpt-4-turbo-preview",
+      # model="gpt-4",
       prompt=prmpt,
       max_tokens=1000,
-      temperature=1
+      temperature=0.7
     )
     return completion.choices[0].text.strip()
+
+def unique_languages_from_voices(voices: Sequence[tts.Voice]):
+    language_set = set()
+    for voice in voices:
+        for language_code in voice.language_codes:
+            language_set.add(language_code)
+    return language_set
 
 def list_languages():
     client = tts.TextToSpeechClient(client_options={"api_key":API_KEY})
@@ -75,17 +86,22 @@ def play_wav_file(file_path):
 
 def doEverything():
     led.pulse()
-    # print("press")
-    user_prompt = "生成一段简短的土味情话,不超过50个字"
-    voice = "cmn-CN-Wavenet-B"
+    # user_prompt = "生成一段简短的土味情话,不超过50个字"
+    # user_prompt = "I'm 15 year old. Tell me a great joke."
+    user_prompt = "Say something encouraging! A little different everytime"
+    # voice = "cmn-CN-Wavenet-B"
+    voice = "en-GB-Neural2-A"
     love_sentence = generate_love_sentence(user_prompt)
     print("Generated love sentence:", love_sentence)
     text_to_wav(voice, love_sentence)
-    wav_file_path = 'cmn-CN-Wavenet-B.wav'
+    # wav_file_path = 'cmn-CN-Wavenet-B.wav'
+    wav_file_path = 'en-GB-Neural2-A.wav'
     play_wav_file(wav_file_path)
     led.off()
 
 # led_ready.blink(on_time=.1,off_time=3,background=True)
+# list_voices()
+led_ready.pulse()
 button = Button("BOARD"+button_pin,hold_repeat=True)
 button.when_pressed = doEverything
 pause()
