@@ -12,6 +12,7 @@ API_KEY=config.GOOGLE_CLOUD_KEY
 led_pin ="8" 
 button_pin ="10" 
 led = PWMLED("BOARD"+led_pin,initial_value=0)
+WORK_DIR = '/home/shuojin/Documents/love/'
 def generate_love_sentence(prmpt):
     # Use OpenAI's GPT-3 to generate a love sentence
     # response = openai.ChatCompletion.create(
@@ -53,7 +54,7 @@ def list_voices(language_code=None):
         gender = tts.SsmlVoiceGender(voice.ssml_gender).name
         rate = voice.natural_sample_rate_hertz
         print(f"{languages:<8} | {name:<24} | {gender:<8} | {rate:,} Hz")
-def text_to_wav(voice_name: str, text: str):
+def text_to_wav(voice_name: str, text: str, path: str):
     language_code = "-".join(voice_name.split("-")[:2])
     text_input = tts.SynthesisInput(text=text)
     voice_params = tts.VoiceSelectionParams(
@@ -68,11 +69,9 @@ def text_to_wav(voice_name: str, text: str):
         audio_config=audio_config,
     )
 
-    # filename = f"{voice_name}.wav"
-    filename = f"/home/shuojin/Documents/love/{voice_name}.wav"
-    with open(filename, "wb") as out:
+    with open(path, "wb") as out:
         out.write(response.audio_content)
-        print(f'Generated speech saved to "{filename}"')
+        print(f'Generated speech saved to "{path}"')
 def play_wav_file(file_path):
     # Load the audio file
     wave_obj = sa.WaveObject.from_wave_file(file_path)
@@ -93,8 +92,8 @@ def doEverything():
     print("thinking....")
     love_sentence = generate_love_sentence(user_prompt)
     print(love_sentence)
-    text_to_wav(voice, love_sentence)
-    wav_file_path = '/home/shuojin/Documents/love/en-GB-Neural2-A.wav'
+    wav_file_path = WORK_DIR+voice+'.wav'
+    text_to_wav(voice, love_sentence,wav_file_path)
     play_wav_file(wav_file_path)
     led.off()
 
