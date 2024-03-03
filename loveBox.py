@@ -68,7 +68,8 @@ def text_to_wav(voice_name: str, text: str):
         audio_config=audio_config,
     )
 
-    filename = f"{voice_name}.wav"
+    # filename = f"{voice_name}.wav"
+    filename = f"/home/shuojin/Documents/love/{voice_name}.wav"
     with open(filename, "wb") as out:
         out.write(response.audio_content)
         print(f'Generated speech saved to "{filename}"')
@@ -89,15 +90,14 @@ def doEverything():
     user_prompt = "Say something encouraging! A little different everytime"
     # voice = "cmn-CN-Wavenet-B"
     voice = "en-GB-Neural2-A"
+    print("thinking....")
     love_sentence = generate_love_sentence(user_prompt)
-    print("Generated love sentence:", love_sentence)
+    print(love_sentence)
     text_to_wav(voice, love_sentence)
-    # wav_file_path = 'cmn-CN-Wavenet-B.wav'
-    wav_file_path = 'en-GB-Neural2-A.wav'
+    wav_file_path = '/home/shuojin/Documents/love/en-GB-Neural2-A.wav'
     play_wav_file(wav_file_path)
     led.off()
 
-# list_voices()
 led.blink()
 button = Button("BOARD"+button_pin,hold_repeat=True)
 button.when_pressed = doEverything
