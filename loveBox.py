@@ -10,10 +10,8 @@ from typing import Sequence
 openai.api_key=config.OPEN_AI_KEY
 API_KEY=config.GOOGLE_CLOUD_KEY
 led_pin ="8" 
-ready_led_pin ="3" 
 button_pin ="10" 
 led = PWMLED("BOARD"+led_pin,initial_value=0)
-led_ready = PWMLED("BOARD"+ready_led_pin,initial_value=.1)
 def generate_love_sentence(prmpt):
     # Use OpenAI's GPT-3 to generate a love sentence
     # response = openai.ChatCompletion.create(
@@ -99,9 +97,8 @@ def doEverything():
     play_wav_file(wav_file_path)
     led.off()
 
-# led_ready.blink(on_time=.1,off_time=3,background=True)
 # list_voices()
-led_ready.pulse()
+led.blink()
 button = Button("BOARD"+button_pin,hold_repeat=True)
 button.when_pressed = doEverything
 pause()
